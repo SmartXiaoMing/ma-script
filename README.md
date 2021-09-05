@@ -6,7 +6,7 @@
       <dependency>
           <groupId>com.xiaoming</groupId>
           <artifactId>ma-script</artifactId>
-          <version>0.0.44</version>
+          <version>0.0.45</version>
       </dependency>
 
 ## 用法示例
@@ -48,7 +48,10 @@
 
             MaScript maScript = new MaScript(); // 初始化脚本
             maScript.compile(src); // 使用源码src, 编译脚本
-            maScript.run(context); // 在上下文context中, 运行脚本
+            Object r = maScript.run(context); // 在上下文context中, 运行脚本
+            if (ScriptUtils.isTrue(r)) {
+              System.out.println("good");
+            }
         }
     }
 
@@ -70,7 +73,7 @@
     * 调用MaScript.compile方法把代码编译. 其返回值会告知是否有语法错误.(示例未展示)
     * 调用MaScript.run(context)运行脚本.
 * 错误处理
-    * 因为动态脚本语言, 没有那么多编译期和运行时检查, 运行时遇到错误会抛出exption给宿主, 并停止.
+    * 因为动态脚本语言, 没有那么多编译期和运行时检查, 运行时遇到错误会抛出exception给宿主, 并停止.
     * 因此编写脚本的时候, 要确认编写的逻辑正确性.
 
 ## 关键概念
@@ -80,3 +83,29 @@
 1. 上下文MaContext并不依赖脚本MaScript编译运行. 这意味着, MaScript.run可以传入任何的context.
 2. MaScript编译的时候并不需要上下文MaContext, 这意味着, MaScript是无状态的, 编译一次, 到处复用.
 3. MaScript.run(context)是有可能改动context中的对值的, 这种context就不纯粹了, 不能复用了. 后面会讲如何复用context.
+
+## 复用MaContext
+
+1. 独立context
+
+    // 这是一个独立的context
+    MaContext baseContext = new MaContext(); 
+    
+    // 这是从baseContext派生出来，是子级作用域
+    // subContext可以读取baseContext全部对象
+    // subContext可以修改baseContext的全部对象, 
+    // subContext中define的对象只能在subContext作用域生效，不会影响baseContext
+    MaContext subContext = baseContext.getSub();
+    
+    // 这是从baseContext派生出来，是子级作用域，baseContext对于sandboxContext是只读的
+    // sandboxContext可以读取baseContext全部对象
+    // sandboxContext可以修改的对象只能在subContext作用域生效，不会影响baseContext。
+    // 当对baseContext中存在的变量复制时，会克隆一个副本; 但是对于容器内增删元素依然会副作用。
+    // sandboxContext中define的对象只能在subContext作用域生效，不会影响baseContext
+    // 这是最常用的context，
+    MaContext sandboxContext = baseContext.getSandbox();
+    
+    // 这是从baseContext复制过来，是平级作用域
+    // 用途是可以复用当前已定义的常量。如果定义的对象有的是非常量，则会产生副作用。         
+    MaContext shadowContext = baseContext.shadowCopy();
+    

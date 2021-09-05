@@ -31,7 +31,6 @@ public class ObjUtils {
         return classLevel.length; // 16
     }
 
-
     public static int compare(Object v1, Object v2) {
         if (v1 == v2) {
             return 0;
