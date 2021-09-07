@@ -88,24 +88,24 @@
 
 1. 独立context
 
-    // 这是一个独立的context
-    MaContext baseContext = new MaContext(); 
+        // 这是一个独立的context
+        MaContext baseContext = new MaContext(); 
     
-    // 这是从baseContext派生出来，是子级作用域
-    // subContext可以读取baseContext全部对象
-    // subContext可以修改baseContext的全部对象, 
-    // subContext中define的对象只能在subContext作用域生效，不会影响baseContext
-    MaContext subContext = baseContext.getSub();
-    
-    // 这是从baseContext派生出来，是子级作用域，baseContext对于sandboxContext是只读的
-    // sandboxContext可以读取baseContext全部对象
-    // sandboxContext可以修改的对象只能在subContext作用域生效，不会影响baseContext。
-    // 当对baseContext中存在的变量复制时，会克隆一个副本; 但是对于容器内增删元素依然会副作用。
-    // sandboxContext中define的对象只能在subContext作用域生效，不会影响baseContext
-    // 这是最常用的context，
-    MaContext sandboxContext = baseContext.getSandbox();
-    
-    // 这是从baseContext复制过来，是平级作用域
-    // 用途是可以复用当前已定义的常量。如果定义的对象有的是非常量，则会产生副作用。         
-    MaContext shadowContext = baseContext.shadowCopy();
+        // 这是从baseContext派生出来，是子级作用域
+        // subContext可以读取baseContext全部对象
+        // subContext可以修改baseContext的全部对象, 
+        // subContext中define的对象只能在subContext作用域生效，不会影响baseContext
+        MaContext subContext = baseContext.getSub();
+        
+        // 这是从baseContext派生出来，是子级作用域，baseContext对于sandboxContext是只读的
+        // sandboxContext可以读取baseContext全部对象
+        // sandboxContext可以修改的对象只能在subContext作用域生效，不会影响baseContext。
+        // 当对baseContext中存在的变量复制时，会克隆一个副本; 但是对于容器内增删元素依然会副作用。
+        // sandboxContext中define的对象只能在subContext作用域生效，不会影响baseContext
+        // 这是最常用的context，
+        MaContext sandboxContext = baseContext.getSandbox();
+        
+        // 这是从baseContext复制过来，是平级作用域
+        // 用途是可以复用当前已定义的常量。如果定义的对象有的是非常量，则会产生副作用。         
+        MaContext shadowContext = baseContext.shadowCopy();
     
